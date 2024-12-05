@@ -1,5 +1,5 @@
 const { dataKey } = require("../data");
-const { genkeyEmbed } = require("../embeds/genkeyEmbed");
+const { genkeyEmbed, genkeyEmbed_Error, genkeyEmbed_ADMIN } = require("../embeds/genkeyEmbed");
 
 module.exports = {
     data: {
@@ -11,7 +11,8 @@ module.exports = {
 
         // ตรวจสอบว่าผู้ที่พิมพ์มาได้รับการอนุญาตหรือไม่
         if (!adminIDS.includes(message.author.id)) {
-            return message.reply("คุณไม่มีสิทธิ์ใช้คำสั่งนี้!")
+            const embed = genkeyEmbed_ADMIN(message);
+            return message.reply({ embeds: [embed] });
         }
 
         // ตรวจสอบว่าได้ระบุจำนวนคีย์หรือยัง
@@ -19,7 +20,8 @@ module.exports = {
 
         // ถ้าไม่มีการะบุจำนวน หรือจำนวนไม่ใช่ตัวเลข
         if (isNaN(numKeys) || numKeys < 1) {
-            return message.reply("กรุณาระบุจำนวนคีย์ที่ต้องการสร้าง (จำนวนต้องเป็นตัวเลขที่มากกว่าศูนย์)!");
+            const embed = genkeyEmbed_Error(message);
+            return message.reply({ embeds: [embed] });
         }
 
         // เก็บคีย์ไว้ใน Array สำหรับแสดงจำนวนคีย์
@@ -39,7 +41,7 @@ module.exports = {
             dataKey.push({ key: newKey, isUsed: false });
             generatedKeys.push(newKey);
         }
- 
+
         // ส่งผลลัพธ์กลับ
         const embed = genkeyEmbed(generatedKeys, message);
         message.channel.send({ embeds: [embed] });
