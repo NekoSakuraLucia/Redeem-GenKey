@@ -1,0 +1,19 @@
+{
+  "name": "neko-redeem-genkey",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NekoSakuraLucia/Redeem-GenKey.git"
+  },
+  "author": "NekoSakuraLucia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NekoSakuraLucia/Redeem-GenKey/issues"
+  },
+  "homepage": "https://github.com/NekoSakuraLucia/Redeem-GenKey#readme"
+}
