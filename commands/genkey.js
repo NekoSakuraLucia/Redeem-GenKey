@@ -1,4 +1,5 @@
 const { dataKey } = require("../data");
+const { genkeyEmbed } = require("../embeds/genkeyEmbed");
 
 module.exports = {
     data: {
@@ -38,8 +39,9 @@ module.exports = {
             dataKey.push({ key: newKey, isUsed: false });
             generatedKeys.push(newKey);
         }
-
+ 
         // ส่งผลลัพธ์กลับ
-        message.channel.send(`คีย์ที่ถูกสร้างใหม่มีดังนี้: \n${generatedKeys.join("\n")}`);
+        const embed = genkeyEmbed(generatedKeys, message);
+        message.channel.send({ embeds: [embed] });
     }
 };
