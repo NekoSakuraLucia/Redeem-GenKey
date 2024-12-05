@@ -5,16 +5,33 @@ module.exports = {
         name: "genkey",
     },
     execute: async (message, args) => {
-        const newKey = `Key-${Math.floor(Math.random() * 100000)}`;
+        // ตรวจสอบว่าได้ระบุจำนวนคีย์หรือยัง
+        const numKeys = parseInt(args[1]);
 
-        const keyExists = dataKey.some(entry => entry.key === newKey);
-
-        if (keyExists) {
-            return message.reply("คีย์นี้มีอยู่แล้ว, กรุณาสร้างใหม่.");
+        // ถ้าไม่มีการะบุจำนวน หรือจำนวนไม่ใช่ตัวเลข
+        if (isNaN(numKeys) || numKeys < 1) {
+            return message.reply("กรุณาระบุจำนวนคีย์ที่ต้องการสร้าง (จำนวนต้องเป็นตัวเลขที่มากกว่าศูนย์)!");
         }
 
-        dataKey.push({ key: newKey, isUsed: false });
+        // เก็บคีย์ไว้ใน Array สำหรับแสดงจำนวนคีย์
+        const generatedKeys = [];
 
-        message.channel.send(`คีย์ใหม่ของคุณคือ: || ${newKey} ||`)
+        // สร้างคีย์ตามจำนวนที่ระบุ
+        for (let i = 0; i < numKeys; i++) {
+            let newKey;
+            let keyExists = true;
+
+            // สร้างคีย์จนกว่าจะไม่ซ้ำกับที่มีอยู่ใน dataKey
+            while (keyExists) {
+                newKey = `Key-${Math.floor(Math.random() * 100000)}`;
+                keyExists = dataKey.some(entry => entry.key === newKey);
+            }
+
+            dataKey.push({ key: newKey, isUsed: false });
+            generatedKeys.push(newKey);
+        }
+
+        // ส่งผลลัพธ์กลับ
+        message.channel.send(`คีย์ที่ถูกสร้างใหม่มีดังนี้: \n${generatedKeys.join("\n")}`);
     }
 };
