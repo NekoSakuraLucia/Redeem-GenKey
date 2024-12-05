@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/NekoSakuraLucia/Redeem-GenKey/issues"
   },
-  "homepage": "https://github.com/NekoSakuraLucia/Redeem-GenKey#readme"
+  "homepage": "https://github.com/NekoSakuraLucia/Redeem-GenKey#readme",
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.7"
+  }
 }
