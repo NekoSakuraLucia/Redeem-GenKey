@@ -5,6 +5,14 @@ module.exports = {
         name: "genkey",
     },
     execute: async (message, args) => {
+        // กำหนด ADMIN IDs ที่สามารถใช้คำสั่งได้
+        const adminIDS = ["ADMIN_1", "ADMIN_2"]; // ใส่เป็นไอดีผู้ใช้ของคุณ หรือ ของคนที่ต้องการอนุญาตให้ใช้คำสั่ง
+
+        // ตรวจสอบว่าผู้ที่พิมพ์มาได้รับการอนุญาตหรือไม่
+        if (!adminIDS.includes(message.author.id)) {
+            return message.reply("คุณไม่มีสิทธิ์ใช้คำสั่งนี้!")
+        }
+
         // ตรวจสอบว่าได้ระบุจำนวนคีย์หรือยัง
         const numKeys = parseInt(args[1]);
 
