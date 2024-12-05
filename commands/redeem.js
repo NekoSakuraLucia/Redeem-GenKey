@@ -1,5 +1,15 @@
 const { PermissionsBitField } = require("discord.js");
 const { dataKey } = require("../data");
+const {
+    usedKeyEmbed,
+    noKeyEmbed,
+    noPermissionEmbed,
+    successEmbed,
+    redeemMessageEmbed,
+    errorEmbed,
+    noRoleEmbed,
+    invalidKeyEmbed
+} = require("../embeds/redeemEmbed");
 
 module.exports = {
     data: {
@@ -7,7 +17,8 @@ module.exports = {
     },
     execute: async (message, args) => {
         if (args.length < 1) {
-            return message.reply("กรุณาระบุคีย์ที่ต้องการใช้!");
+            const embed = noKeyEmbed(message);
+            return message.channel.send({ embeds: [embed] });
         }
 
         const redeemKey = args[1]?.trim();
@@ -15,11 +26,13 @@ module.exports = {
         const keyEntry = dataKey.find(entry => entry.key === redeemKey);
 
         if (!keyEntry) {
-            return message.reply("คีย์นี้ไม่ถูกต้อง!");
+            const embed = invalidKeyEmbed(message);
+            return message.channel.send({ embeds: [embed] });
         }
 
         if (keyEntry.isUsed) {
-            return message.reply("คีย์นี้ถูกใช้งานไปแล้ว");
+            const embed = usedKeyEmbed(message);
+            return message.channel.send({ embeds: [embed] });
         }
 
         // อัพเดตสถานะของคีย์ก่อนการมอบ role
@@ -37,21 +50,27 @@ module.exports = {
                     if (botMember.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                         try {
                             await member.roles.add(role);
-                            message.channel.send(`คุณได้รับ role "${role.name}" เรียบร้อยแล้ว!`);
-                            message.channel.send(`คุณได้ใช้คีย์: ${redeemKey} เรียบร้อยแล้ว!`);
+                            const embed = successEmbed(message, redeemKey, role);
+                            const embedRedeem = redeemMessageEmbed(message, redeemKey);
+                            message.channel.send({ embeds: [embed] });
+                            message.channel.send({ embeds: [embedRedeem] });
                         } catch (error) {
                             console.error(error);
-                            message.reply("เกิดข้อผิดพลาดในการมอบ role..");
+                            const embed = errorEmbed(message);
+                            message.channel.send({ embeds: [embed] });
                         }
                     } else {
-                        message.reply("บอทไม่มีสิทธิ์ในการมอบ role นี้.");
+                        const embed = noPermissionEmbed(message);
+                        message.channel.send({ embeds: [embed] });
                     }
                 } else {
-                    message.reply("ไม่พบ role ที่ต้องการมอบให้");
+                    const embed = noRoleEmbed(message);
+                    message.channel.send({ embeds: [embed] });
                 }
             } catch (error) {
                 console.error(error);
-                message.reply("เกิดข้อผิดพลาดในการมอบ role.");
+                const embed = errorEmbed(message);
+                message.channel.send({ embeds: [embed] });
             }
         }
     }

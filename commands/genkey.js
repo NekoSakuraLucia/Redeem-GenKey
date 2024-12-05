@@ -12,7 +12,7 @@ module.exports = {
         // ตรวจสอบว่าผู้ที่พิมพ์มาได้รับการอนุญาตหรือไม่
         if (!adminIDS.includes(message.author.id)) {
             const embed = genkeyEmbed_ADMIN(message);
-            return message.reply({ embeds: [embed] });
+            return message.channel.send({ embeds: [embed] });
         }
 
         // ตรวจสอบว่าได้ระบุจำนวนคีย์หรือยัง
@@ -21,7 +21,7 @@ module.exports = {
         // ถ้าไม่มีการะบุจำนวน หรือจำนวนไม่ใช่ตัวเลข
         if (isNaN(numKeys) || numKeys < 1) {
             const embed = genkeyEmbed_Error(message);
-            return message.reply({ embeds: [embed] });
+            return message.channel.send({ embeds: [embed] });
         }
 
         // เก็บคีย์ไว้ใน Array สำหรับแสดงจำนวนคีย์
