@@ -9,7 +9,7 @@ module.exports = {
             return message.reply("กรุณาระบุคีย์ที่ต้องการใช้!")
         }
 
-        const redeemKey = args[0];
+        const redeemKey = args[1].trim();
 
         const keyEntry = dataKey.find(entry => entry.key === redeemKey);
 
@@ -19,10 +19,9 @@ module.exports = {
 
         if (keyEntry.isUsed) {
             return message.reply("คีย์นี้ถูกใช้งานไปแล้ว");
+        } else {
+            keyEntry.isUsed = true;
+            message.reply(`คุณได้ใช้คีย์: ${redeemKey} เรียบร้อยแล้ว!`)
         }
-
-        keyEntry.isUsed = true;
-
-        message.reply(`คุณได้ใช้คีย์: ${redeemKey} เรียบร้อยแล้ว!`)
     }
 };
