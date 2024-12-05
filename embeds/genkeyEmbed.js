@@ -11,7 +11,7 @@ function genkeyEmbed(generatedKeys, message) {
 
 function genkeyEmbed_Error(message) {
     return new EmbedBuilder()
-        .setColor("#f472b6")
+        .setColor("#ff4d4d")
         .setTitle("กรุณาระบุจำนวนคีย์ที่ต้องการสร้าง!")
         .setDescription("จำนวนคีย์ต้องเป็นตัวเลขที่มากกว่าศูนย์.")
         .setTimestamp()
@@ -20,7 +20,7 @@ function genkeyEmbed_Error(message) {
 
 function genkeyEmbed_ADMIN(message) {
     return new EmbedBuilder()
-        .setColor("#f472b6")
+        .setColor("#ff4d4d")
         .setTitle("คุณไม่มีสิทธิ์ใช้คำสั่งนี้!")
         .setDescription("คุณไม่ได้รับอนุญาตให้ใช้คำสั่งนี้.")
         .setTimestamp()
