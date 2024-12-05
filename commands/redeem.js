@@ -1,3 +1,4 @@
+const { PermissionsBitField } = require("discord.js");
 const { dataKey } = require("../data");
 
 module.exports = {
@@ -32,9 +33,19 @@ module.exports = {
             try {
                 const role = message.guild.roles.cache.get(roleID);
                 if (role) {
-                    await member.roles.add(role);
-                    message.channel.send(`คุณได้รับ role "${role.name}" เรียบร้อยแล้ว!`);
-                    message.channel.send(`คุณได้ใช้คีย์: ${redeemKey} เรียบร้อยแล้ว!`);
+                    const botMember = message.guild.members.cache.get(message.client.user.id);
+                    if (botMember.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+                        try {
+                            await member.roles.add(role);
+                            message.channel.send(`คุณได้รับ role "${role.name}" เรียบร้อยแล้ว!`);
+                            message.channel.send(`คุณได้ใช้คีย์: ${redeemKey} เรียบร้อยแล้ว!`);
+                        } catch (error) {
+                            console.error(error);
+                            message.reply("เกิดข้อผิดพลาดในการมอบ role..");
+                        }
+                    } else {
+                        message.reply("บอทไม่มีสิทธิ์ในการมอบ role นี้.");
+                    }
                 } else {
                     message.reply("ไม่พบ role ที่ต้องการมอบให้");
                 }
