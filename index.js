@@ -29,8 +29,9 @@ client.on("messageCreate", async (message) => {
 
     const args = message.content.split(" ");
 
-    const commandName = args[0].split(1).toLowerCase();
+    if (!args[0] || typeof args[0] !== "string") return;
 
+    const commandName = args[0].slice(1).toLowerCase();
     const command = client.commands.get(commandName);
 
     if (!command) return;
