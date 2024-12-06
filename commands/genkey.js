@@ -1,4 +1,4 @@
-const { dataKey } = require("../data");
+const { db } = require("../data");
 const { genkeyEmbed, genkeyEmbed_Error, genkeyEmbed_ADMIN } = require("../embeds/genkeyEmbed");
 
 module.exports = {
@@ -32,13 +32,29 @@ module.exports = {
             let newKey;
             let keyExists = true;
 
-            // สร้างคีย์จนกว่าจะไม่ซ้ำกับที่มีอยู่ใน dataKey
+            // สร้างคีย์จนกว่าจะไม่ซ้ำกับที่มีอยู่ในฐานข้อมูล
             while (keyExists) {
                 newKey = `Key-${Math.floor(Math.random() * 100000)}`;
-                keyExists = dataKey.some(entry => entry.key === newKey);
+                // ตรวจสอบว่า key นี้มีอยู่ในฐานข้อมูลแล้วหรือไม่
+                await new Promise((resolve) => {
+                    db.get('SELECT key FROM keys WHERE key = ?', [newKey], (err, row) => {
+                        if (err) {
+                            console.error(err.message);
+                            resolve();
+                        }
+                        if (row) {
+                            keyExists = true; // ถ้ามีคีย์ซ้ำ
+                        } else {
+                            keyExists = false; // ถ้าไม่มีคีย์ซ้ำ
+                        }
+                        resolve();
+                    });
+                });
             }
 
-            dataKey.push({ key: newKey, isUsed: false });
+            // บันทึกคีย์ใหม่ลงในฐานข้อมูล
+            db.run('INSERT INTO keys (key, isUsed) VALUES (?, ?)', [newKey, false]);
+
             generatedKeys.push(newKey);
         }
 
