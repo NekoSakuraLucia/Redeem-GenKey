@@ -35,25 +35,33 @@ module.exports = {
             // สร้างคีย์จนกว่าจะไม่ซ้ำกับที่มีอยู่ในฐานข้อมูล
             while (keyExists) {
                 newKey = `Key-${Math.floor(Math.random() * 100000)}`;
+
                 // ตรวจสอบว่า key นี้มีอยู่ในฐานข้อมูลแล้วหรือไม่
-                await new Promise((resolve) => {
+                const row = await new Promise((resolve, reject) => {
                     db.get('SELECT key FROM keys WHERE key = ?', [newKey], (err, row) => {
                         if (err) {
-                            console.error(err.message);
-                            resolve();
+                            reject(err); // ถ้าเกิดข้อผิดพลาด
                         }
-                        if (row) {
-                            keyExists = true; // ถ้ามีคีย์ซ้ำ
-                        } else {
-                            keyExists = false; // ถ้าไม่มีคีย์ซ้ำ
-                        }
-                        resolve();
+                        resolve(row); // คืนค่าผลลัพธ์
                     });
                 });
+
+                if (row) {
+                    keyExists = true; // ถ้ามีคีย์ซ้ำ
+                } else {
+                    keyExists = false; // ถ้าไม่มีคีย์ซ้ำ
+                }
             }
 
             // บันทึกคีย์ใหม่ลงในฐานข้อมูล
-            db.run('INSERT INTO keys (key, isUsed) VALUES (?, ?)', [newKey, false]);
+            await new Promise((resolve, reject) => {
+                db.run('INSERT INTO keys (key, isUsed) VALUES (?, ?)', [newKey, false], (err) => {
+                    if (err) {
+                        reject(err); // ถ้าเกิดข้อผิดพลาด
+                    }
+                    resolve(); // ถ้าสำเร็จ
+                });
+            });
 
             generatedKeys.push(newKey);
         }
